@@ -1,0 +1,9 @@
+
+{
+  "name": "ShifoCRM - Professional Clinic Management",
+  "description": "Premium dental management software with AI-powered support, interactive odontograms, and smart logistics tracking.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
