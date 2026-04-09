@@ -180,7 +180,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
             <a href="#problem" className="hover:text-shifo-primary transition-colors">Muammo</a>
             <a href="#solution" className="hover:text-shifo-primary transition-colors">Yechim</a>
             <a href="#modules" className="hover:text-shifo-primary transition-colors">Modullar</a>
-            <a href="#pricing" className="hover:text-shifo-primary transition-colors">Tariflar</a>
             <a href="#faq" className="hover:text-shifo-primary transition-colors">FAQ</a>
             <button onClick={onNavigateToGuide} className="hover:text-shifo-primary transition-colors inline-flex items-center gap-1">
               Qo'llanma <BookOpen className="h-4 w-4" />
@@ -364,31 +363,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
               <h3 className="mt-4 font-bold text-slate-900">Supabase / Cloud</h3>
               <p className="mt-2 text-slate-600">Ma'lumotlar bulutda xavfsiz saqlanadi va filiallar bo'yicha boshqariladi.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Tariflar</h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border border-slate-200 p-6 bg-white">
-              <p className="text-sm font-semibold text-shifo-primary uppercase tracking-wider">Start</p>
-              <p className="mt-4 text-slate-600">Kichik klinikalar uchun asosiy modullar.</p>
-            </div>
-            <div className="rounded-2xl border-2 border-shifo-primary p-6 bg-shifo-light relative overflow-hidden">
-              <div className="absolute -right-10 top-4 rotate-12 bg-shifo-primary text-white text-xs px-10 py-1 font-bold">TOP</div>
-              <p className="text-sm font-semibold text-shifo-primary uppercase tracking-wider">Pro</p>
-              <p className="mt-4 text-slate-700">O'sayotgan klinikalar uchun to'liq CRM + hisobotlar.</p>
-            </div>
-            <div className="rounded-2xl border border-slate-200 p-6 bg-white">
-              <p className="text-sm font-semibold text-shifo-primary uppercase tracking-wider">Enterprise</p>
-              <p className="mt-4 text-slate-600">Ko'p filialli tarmoqlar uchun maxsus yechim va onboarding.</p>
-            </div>
-          </div>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#pricing" className="bg-slate-900 text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-800 transition-colors">Narxlar bilan tanishish</a>
-            <a href="#demo-form" className="bg-white border border-slate-300 px-6 py-3 rounded-xl font-semibold hover:border-shifo-primary hover:text-shifo-primary transition-colors">Demo olish</a>
           </div>
         </div>
       </section>
