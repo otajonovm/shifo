@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  ArrowLeft, Search, Stethoscope, ChevronDown, ChevronUp, BookOpen,
+  ArrowLeft, Search, ChevronDown, ChevronUp, BookOpen,
   LayoutDashboard, Users as UsersIcon, Calendar, CreditCard, Box,
   Settings, Zap, MessageSquare, Send, Sparkles, X, Layers, Shield, 
   ListChecks, HeartPulse, Wallet, Receipt, Package, PieChart, UserCog, Languages,
@@ -15,6 +15,8 @@ interface UserGuideProps {
 }
 
 const UserGuide: React.FC<UserGuideProps> = ({ onBackToLanding }) => {
+  const logoSrc = '/img/shifocrm_logo.png';
+
   const [activeRole, setActiveRole] = useState<UserRole>(UserRole.ADMIN);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['intro']));
@@ -359,9 +361,7 @@ const UserGuide: React.FC<UserGuideProps> = ({ onBackToLanding }) => {
               <ArrowLeft className="h-5 w-5 text-slate-600" />
             </button>
             <div className="flex items-center space-x-3">
-              <div className="bg-shifo-primary p-2 rounded-xl">
-                <Stethoscope className="h-5 w-5 text-white" />
-              </div>
+              <img src={logoSrc} alt="ShifoCRM logo" className="h-10 w-10 object-contain" />
               <div>
                 <h2 className="text-xl font-black text-slate-900 leading-none">Foydalanuvchi Qo'llanmasi</h2>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">15 ta bo'lim</p>
