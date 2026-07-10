@@ -1,110 +1,411 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ArrowRight,
-  BarChart3,
   BellRing,
   BookOpen,
-  Building2,
-  CalendarCheck2,
-  CheckCircle2,
-  ChevronRight,
-  Clock3,
+  Check,
   Cloud,
-  Mail,
+  Database,
+  Headphones,
+  ArrowRightLeft,
   MapPin,
-  Megaphone,
   MessageCircle,
-  Package,
   Phone,
+  Send,
   ShieldCheck,
-  Sparkles,
   Smartphone,
   Stethoscope,
-  Users,
-  Wallet,
-  ClipboardPlus,
-  Send,
+  X,
 } from 'lucide-react';
+
+type Lang = 'uz' | 'ru';
 
 interface LandingPageProps {
   onNavigateToGuide: () => void;
 }
 
-const moduleCards: { title: string; description: string; icon: React.ElementType }[] = [
-  {
-    title: 'Qabul (Appointments)',
-    description: "Shifokor kesimida bo'sh vaqtlarni ko'ring, tez bron qiling.",
-    icon: CalendarCheck2,
+const translations = {
+  uz: {
+    nav: {
+      features: 'Xususiyatlar',
+      pricing: 'Tariflar',
+      contact: 'Aloqa',
+      cta: '7 kun bepul sinash',
+    },
+    hero: {
+      badge: 'Stomatologiyalar uchun bulutli CRM',
+      headline: "Bemorlarni 'bir martalik' qilmang — umrbod mijozga aylantiring!",
+      subheadline:
+        'ShifoCRM — stomatologiyalar uchun bemorlar bazasini xavfsiz saqlash va ularni avtomatik qabulga qaytarish tizimi.',
+      cta: '7 kunlik BEPUL sinovni boshlash',
+      subtext: 'Excel va daftarlardagi eski bemorlar bazangizni ham tizimga qo\'shib beramiz',
+      trust: ['24/7 qo\'llab-quvvatlash', 'Eski bazani tizimga qo\'shamiz', 'SMS va Telegram eslatmalar'],
+    },
+    salesStrengths: {
+      title: 'Klinikalarni ShifoCRM\'ga o\'tkazadigan eng kuchli argumentlar',
+      items: [
+        {
+          title: '24/7 qo\'llab-quvvatlash',
+          desc: 'Kun-u tun texnik yordam — muammo yuzaga kelsa, jamoamiz doim yoningizda.',
+        },
+        {
+          title: 'Eski bazani tizimga qo\'shamiz',
+          desc: 'Excel va daftarlardagi eski bemorlar bazangizni ham tizimga kiritib beramiz — siz hech narsa qilmaysiz.',
+        },
+      ],
+    },
+    problems: {
+      title: 'Klinikangizda qaysi muammolar bor?',
+      subtitle: 'Qog\'oz daftar va qo\'lda boshqaruv klinikangiz daromadini kamaytiradi.',
+      cards: [
+        {
+          title: "Qog'oz daftarlardagi chalkashlik",
+          desc: "Bemorlar bazasi daftarlarda tarqoq, kerakli odamni topish qiyin va ma'lumotlar yo'qolib ketish xavfi bor.",
+        },
+        {
+          title: 'Bemorlar qabulga kelmay qolyaptimi?',
+          desc: 'Administrator har bir bemorga eslatib chiqishga ulgurmaydi. Kreslolar bo\'sh qoladi, daromad yo\'qoladi.',
+        },
+        {
+          title: "Ma'lumotlar bir joyda emas",
+          desc: 'Rentgen suratlari, tish formulasi va tarix alohida-alohida saqlanadi. Shifokor vaqtini izlashga sarflaydi.',
+        },
+      ],
+    },
+    solution: {
+      title: 'ShifoCRM yechimi',
+      subtitle: 'Bemorlar bazasini xavfsiz saqlang va ularni avtomatik qabulga qaytaring.',
+      blocks: [
+        {
+          title: 'Aqlli raqamli baza',
+          subtitle: 'Smart Cloud Database',
+          desc: "Bir umr yo'qolmaydigan xavfsiz bemorlar bazasi. Tashriflar tarixi, tish formulasi va rentgen rasmlari bitta joyda.",
+        },
+        {
+          title: 'Avtomatik qayta chaqirish',
+          subtitle: 'Automated Recall',
+          desc: "Vaqti kelgan bemorlarni tizim o'zi aniqlaydi va ularning Telegram/SMS'iga avtomatik ravishda chiroyli eslatma-taklifnoma yuboradi.",
+        },
+      ],
+    },
+    objection: {
+      title: 'O\'tish oson — biz hammasini qilamiz',
+      text: 'Dasturni o\'rganish uchun 15 daqiqa yetarli. Excel va daftarlardagi eski bemorlar bazangizni ham tizimga qo\'shib beramiz va 24/7 qo\'llab-quvvatlaymiz.',
+      points: ['24/7 qo\'llab-quvvatlash', 'Eski bazani tizimga qo\'shamiz', '15 daqiqada o\'rganish'],
+    },
+    pricing: {
+      title: 'Tariflar',
+      subtitle: 'Barcha tariflarda 7 kunlik bepul sinov, eski bazani tizimga qo\'shish va 24/7 qo\'llab-quvvatlash.',
+      perMonth: 'oyiga',
+      perDoctor: '× doktor soni',
+      example: 'Misol: 4 doktor = 600,000 so\'m/oy',
+      plans: [
+        {
+          name: 'Yakka Doktor',
+          desc: 'Yakka stomatologlar uchun',
+          features: [
+            {
+              title: 'Bemorlar bazasi',
+              desc: 'Elektron tibbiy karta, davolash tarixi va tish xaritasi.',
+            },
+            {
+              title: 'Onlayn qabul',
+              desc: 'QR kod yoki shaxsiy link orqali bemorlar o\'zi yoziladi.',
+            },
+            {
+              title: 'Kelmay qolishni kamaytirish',
+              desc: 'Telegram orqali avtomatik eslatmalar.',
+            },
+            {
+              title: 'Aqlli Kalendar',
+              desc: 'Kunlik qabullarni tartibga solish va vaqtni tejash.',
+            },
+            {
+              title: 'Statistika',
+              desc: 'Daromad va qabullar bo\'yicha aniq hisobotlar.',
+            },
+            {
+              title: 'Ma\'lumotlarni o\'tkazib berish',
+              desc: 'Eski qog\'oz daftar yoki Excel fayllaringizni tizimga biz tekinga va xatosiz ko\'chirib beramiz.',
+            },
+            {
+              title: '24/7 Qo\'llab-quvvatlash',
+              desc: 'Har qanday savol bo\'yicha doimiy texnik yordam.',
+            },
+          ],
+          price: '150,000 so\'m',
+          cta: 'Boshlash',
+        },
+        {
+          name: 'Klinika (Pro)',
+          desc: '2–7+ shifokorli klinikalar uchun',
+          features: [
+            {
+              title: 'Yakka Doktor tarifidagi barcha imkoniyatlar',
+              desc: '',
+            },
+            {
+              title: 'Xodimlar ierarxiyasi',
+              desc: 'Har bir doktorga alohida ruxsat va nazorat tizimi.',
+            },
+            {
+              title: 'KPI hisoblash',
+              desc: 'Har bir shifokorning ish unumdorligi va ulushli maoshini avtomatik hisoblash.',
+            },
+            {
+              title: 'Moliya tahlili',
+              desc: 'Klinika daromadi, qarzlar va xarajatlarni real vaqtda ko\'rish.',
+            },
+            {
+              title: 'Ombor nazorati',
+              desc: 'Materiallar sarfi va qoldiqni avtomatik hisoblash.',
+            },
+            {
+              title: 'Kassa nazorati',
+              desc: 'Barcha to\'lovlarni shaffof nazorat qilish.',
+            },
+            {
+              title: 'Ma\'lumotlarni o\'tkazib berish',
+              desc: 'Klinikangizdagi barcha bemorlar bazasini qog\'oz daftar yoki Exceldan tizimga biz tekinga va xatosiz o\'tkazib beramiz.',
+            },
+            {
+              title: '24/7 Qo\'llab-quvvatlash',
+              desc: 'Jamoangiz uchun doimiy texnik yordam.',
+            },
+          ],
+          price: '150,000 so\'m',
+          priceNote: true,
+          cta: 'Boshlash',
+          popular: true,
+        },
+      ],
+      popular: 'Eng mashhur',
+    },
+    footerCta: {
+      title: 'Klinikangizni yangi bosqichga olib chiqing',
+      subtitle: '7 kun bepul sinab ko\'ring. Eski bazangizni tizimga qo\'shamiz va 24/7 qo\'llab-quvvatlaymiz.',
+      cta: 'Bepul sinashni boshlash',
+    },
+    contact: {
+      title: 'Kontakt',
+      hours: 'Dush–Shan, 09:00–19:00',
+      rights: 'Barcha huquqlar himoyalangan.',
+      guide: 'Foydalanuvchi qo\'llanmasi',
+    },
+    demo: {
+      title: 'Bepul sinovni boshlash',
+      subtitle: 'Ma\'lumotlaringizni qoldiring — 24 soat ichida bog\'lanamiz.',
+      clinic: 'Klinikangiz nomi',
+      phone: 'Telefon',
+      name: 'Ism-sharif',
+      message: 'Xabar',
+      submit: 'So\'rov yuborish',
+      sending: 'Yuborilmoqda...',
+      cancel: 'Bekor qilish',
+      success: 'So\'rov muvaffaqiyatli yuborildi! Tez orada siz bilan bog\'lanamiz.',
+      error: 'Xatolik yuz berdi. Qayta urinib ko\'ring.',
+    },
+    mobile: {
+      trial: 'Bepul sinash',
+      call: 'Qo\'ng\'iroq',
+    },
   },
-  {
-    title: 'Bemorlar (Patients)',
-    description: "Kontakt, tashxis, tashriflar va davolash tarixini jamlang.",
-    icon: Users,
+  ru: {
+    nav: {
+      features: 'Возможности',
+      pricing: 'Тарифы',
+      contact: 'Контакты',
+      cta: 'Попробовать 7 дней бесплатно',
+    },
+    hero: {
+      badge: 'Облачная CRM для стоматологий',
+      headline: "Не делайте пациентов 'одноразовыми' — превратите в постоянных клиентов!",
+      subheadline:
+        'ShifoCRM — умная база данных и система автоматического возврата пациентов, созданная специально для стоматологий.',
+      cta: 'Начать 7 дней БЕСПЛАТНО',
+      subtext: 'Старую базу пациентов из Excel и тетрадей тоже добавим в систему',
+      trust: ['Поддержка 24/7', 'Добавим старую базу в систему', 'SMS и Telegram напоминания'],
+    },
+    salesStrengths: {
+      title: 'Главные аргументы для перехода на ShifoCRM',
+      items: [
+        {
+          title: 'Поддержка 24/7',
+          desc: 'Круглосуточная техподдержка — мы всегда рядом, если возникнет вопрос.',
+        },
+        {
+          title: 'Добавим старую базу в систему',
+          desc: 'Старую базу пациентов из Excel и тетрадей тоже внесём в систему — вам ничего делать не нужно.',
+        },
+      ],
+    },
+    problems: {
+      title: 'Какие проблемы есть в вашей клинике?',
+      subtitle: 'Бумажные тетради и ручное управление снижают прибыль клиники.',
+      cards: [
+        {
+          title: 'Хаос в бумажных тетрадях',
+          desc: 'База разбросана, найти нужного пациента сложно, есть риск потери данных.',
+        },
+        {
+          title: 'Пациенты забывают о приеме?',
+          desc: 'Администратор не успевает всех обзвонить. Кресла пустуют, клиника теряет прибыль.',
+        },
+        {
+          title: 'Данные не в одном месте',
+          desc: 'Снимки, зубная формула и история хранятся отдельно. Врач тратит время на поиск.',
+        },
+      ],
+    },
+    solution: {
+      title: 'Решение ShifoCRM',
+      subtitle: 'Безопасно храните базу пациентов и автоматически возвращайте их на приём.',
+      blocks: [
+        {
+          title: 'Умная цифровая база',
+          subtitle: 'Smart Cloud Database',
+          desc: 'Надёжная облачная база пациентов. История визитов, зубная формула и снимки всегда под рукой.',
+        },
+        {
+          title: 'Автоматический возврат',
+          subtitle: 'Automated Recall',
+          desc: 'Система сама видит, кого пора пригласить на осмотр, и автоматически отправляет напоминание в Telegram/SMS.',
+        },
+      ],
+    },
+    objection: {
+      title: 'Переход простой — мы всё сделаем за вас',
+      text: 'Обучение займёт 15 минут. Старую базу пациентов из Excel и тетрадей тоже добавим в систему и обеспечим поддержку 24/7.',
+      points: ['Поддержка 24/7', 'Добавим старую базу в систему', 'Обучение за 15 минут'],
+    },
+    pricing: {
+      title: 'Тарифы',
+      subtitle: 'На всех тарифах — 7 дней бесплатно, добавление старой базы в систему и поддержка 24/7.',
+      perMonth: 'в месяц',
+      perDoctor: '× количество врачей',
+      example: 'Пример: 4 врача = 600 000 сум/мес',
+      plans: [
+        {
+          name: 'Один врач',
+          desc: 'Для одного стоматолога',
+          features: [
+            {
+              title: 'База пациентов',
+              desc: 'Электронная медкарта, история лечения и зубная карта.',
+            },
+            {
+              title: 'Онлайн-запись',
+              desc: 'Пациенты записываются сами через QR-код или персональную ссылку.',
+            },
+            {
+              title: 'Меньше неявок',
+              desc: 'Автоматические напоминания в Telegram.',
+            },
+            {
+              title: 'Умный календарь',
+              desc: 'Упорядочивание ежедневных приёмов и экономия времени.',
+            },
+            {
+              title: 'Статистика',
+              desc: 'Точные отчёты по доходам и приёмам.',
+            },
+            {
+              title: 'Перенос данных',
+              desc: 'Бесплатно и без ошибок перенесём вашу старую базу из тетрадей или Excel в систему.',
+            },
+            {
+              title: 'Поддержка 24/7',
+              desc: 'Постоянная техподдержка по любым вопросам.',
+            },
+          ],
+          price: '150 000 сум',
+          cta: 'Начать',
+        },
+        {
+          name: 'Клиника (Pro)',
+          desc: 'Для клиник с 2–7+ врачами',
+          features: [
+            {
+              title: 'Все возможности тарифа «Один врач»',
+              desc: '',
+            },
+            {
+              title: 'Иерархия сотрудников',
+              desc: 'Отдельные права доступа и контроль для каждого врача.',
+            },
+            {
+              title: 'Расчёт KPI',
+              desc: 'Автоматический расчёт продуктивности и процентной зарплаты каждого врача.',
+            },
+            {
+              title: 'Финансовая аналитика',
+              desc: 'Доходы, долги и расходы клиники в реальном времени.',
+            },
+            {
+              title: 'Контроль склада',
+              desc: 'Автоматический учёт расхода материалов и остатков.',
+            },
+            {
+              title: 'Контроль кассы',
+              desc: 'Прозрачный учёт всех платежей.',
+            },
+            {
+              title: 'Перенос данных',
+              desc: 'Бесплатно и без ошибок перенесём всю базу пациентов клиники из тетрадей или Excel в систему.',
+            },
+            {
+              title: 'Поддержка 24/7',
+              desc: 'Постоянная техподдержка для вашей команды.',
+            },
+          ],
+          price: '150 000 сум',
+          priceNote: true,
+          cta: 'Начать',
+          popular: true,
+        },
+      ],
+      popular: 'Популярный',
+    },
+    footerCta: {
+      title: 'Переведите клинику на новый уровень',
+      subtitle: 'Попробуйте 7 дней бесплатно. Добавим старую базу в систему и обеспечим поддержку 24/7.',
+      cta: 'Начать бесплатно',
+    },
+    contact: {
+      title: 'Контакты',
+      hours: 'Пн–Сб, 09:00–19:00',
+      rights: 'Все права защищены.',
+      guide: 'Руководство пользователя',
+    },
+    demo: {
+      title: 'Начать бесплатный период',
+      subtitle: 'Оставьте данные — свяжемся в течение 24 часов.',
+      clinic: 'Название клиники',
+      phone: 'Телефон',
+      name: 'Ф.И.О.',
+      message: 'Сообщение',
+      submit: 'Отправить заявку',
+      sending: 'Отправка...',
+      cancel: 'Отмена',
+      success: 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.',
+      error: 'Произошла ошибка. Попробуйте снова.',
+    },
+    mobile: {
+      trial: 'Бесплатно',
+      call: 'Позвонить',
+    },
   },
-  {
-    title: 'Lidlar (Leads)',
-    description: "Telegram/public sahifadan kelgan so'rovlarni yo'qotmang.",
-    icon: Megaphone,
-  },
-  {
-    title: 'Tashriflar (Visits)',
-    description: "Har qabul bo'yicha xizmatlar, status va izohlar.",
-    icon: ClipboardPlus,
-  },
-  {
-    title: "To'lovlar (Payments)",
-    description: "Kassa oqimi, to'langan/to'lanmagan holatlar.",
-    icon: Wallet,
-  },
-  {
-    title: 'Ombor (Inventory)',
-    description: "Material kirim-chiqimi va sarf nazorati.",
-    icon: Package,
-  },
-  {
-    title: 'Hisobotlar (Reports)',
-    description: "Kunlik/oylik tushum va samaradorlik ko'rsatkichlari.",
-    icon: BarChart3,
-  },
-];
+} as const;
 
-const faqItems = [
-  {
-    q: "Ma'lumotlar xavfsizmi?",
-    a: "Ha, rolga asoslangan kirish va himoyalangan infratuzilma qo'llanadi.",
-  },
-  {
-    q: 'Migratsiya qiyinmi?',
-    a: "Yo'q, boshlang'ich sozlash va import bo'yicha yordam beriladi.",
-  },
-  {
-    q: 'Mobil telefonda ishlaydimi?',
-    a: "Ha, mobilga mos interfeýs bilan ishlaydi.",
-  },
-  {
-    q: 'Telegram bilan ishlaydimi?',
-    a: 'Ha, lead va xabarnoma jarayonlari bilan integratsiya bor.',
-  },
-  {
-    q: "Ko'p filialni qo'llaydimi?",
-    a: "Ha, klinika/filiallar bo'yicha boshqaruv mumkin.",
-  },
-  {
-    q: 'Jamoa rollarini boshqarish bormi?',
-    a: "Ha, administrator, shifokor va qabul xodimlari uchun alohida ruxsatlar beriladi.",
-  },
-  {
-    q: 'Hisobotlarni eksport qilish mumkinmi?',
-    a: "Ha, asosiy moliyaviy va operatsion hisobotlarni ko'rish hamda ulashish mumkin.",
-  },
-];
+const TELEGRAM_BOT_TOKEN = '8537318966:AAFImCxi9M_vjhjKmWvy0jXaVYm_Fvn_L_U';
+const TELEGRAM_CHAT_ID = '7736700647';
 
 const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
-  const logoSrc = '/img/shifocrm_logo.png';
-  const TELEGRAM_BOT_TOKEN = '8537318966:AAFImCxi9M_vjhjKmWvy0jXaVYm_Fvn_L_U';
-  const TELEGRAM_CHAT_ID = '7736700647';
-
+  const [lang, setLang] = useState<Lang>(() => {
+    const saved = localStorage.getItem('shifocrm-lang');
+    return saved === 'ru' ? 'ru' : 'uz';
+  });
   const [demoOpen, setDemoOpen] = useState(false);
   const [demoSubmitting, setDemoSubmitting] = useState(false);
   const [demoStatus, setDemoStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -115,6 +416,22 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
     phone: '',
     message: '',
   });
+
+  const t = translations[lang];
+  const logoSrc = '/img/shifocrm_logo.png';
+
+  useEffect(() => {
+    localStorage.setItem('shifocrm-lang', lang);
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const switchLang = (next: Lang) => setLang(next);
+
+  const openDemo = () => {
+    setDemoOpen(true);
+    setDemoStatus('idle');
+    setDemoError('');
+  };
 
   const handleDemoSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -130,6 +447,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
       `👤 Kontakt: ${demoForm.fullName || '—'}`,
       `📞 Telefon: ${demoForm.phone}`,
       `💬 Xabar: ${demoForm.message || '—'}`,
+      `🌐 Til: ${lang.toUpperCase()}`,
     ].join('\n');
 
     try {
@@ -139,24 +457,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
         body: JSON.stringify({
           chat_id: String(TELEGRAM_CHAT_ID),
           text: payload,
-          parse_mode: 'HTML',
         }),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
-        const errorMsg = data?.description || data?.error_code
-          ? `Xatolik ${data?.error_code}: ${data?.description}`
-          : 'Telegram ga yuborishda xatolik yuz berdi';
-        throw new Error(errorMsg);
+        throw new Error(data?.description || 'Telegram send failed');
       }
 
       setDemoStatus('success');
       setDemoForm({ clinicName: '', fullName: '', phone: '', message: '' });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Telegram send failed';
-      setDemoError(message);
+      setDemoError(error instanceof Error ? error.message : 'Telegram send failed');
       setDemoStatus('error');
     } finally {
       setDemoSubmitting(false);
@@ -165,159 +477,184 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
 
   return (
     <div className="min-h-screen bg-white text-slate-800 selection:bg-shifo-primary selection:text-white pb-24 md:pb-0">
-      <nav className="sticky top-0 z-50 glass-effect border-b border-shifo-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <a href="#hero" className="flex items-center gap-3">
-            <img src={logoSrc} alt="ShifoCRM logo" className="h-11 w-11 object-contain" />
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 glass-effect border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+          <a href="#" className="flex items-center gap-2.5 shrink-0">
+            <img src={logoSrc} alt="ShifoCRM" className="h-9 w-9 sm:h-11 sm:w-11 object-contain" />
             <div>
-              <p className="text-xl font-display font-extrabold text-slate-900 leading-none">
+              <p className="text-lg sm:text-xl font-display font-extrabold text-shifo-navy leading-none">
                 SHIFO<span className="text-shifo-primary">CRM</span>
               </p>
-              <p className="text-[10px] tracking-[0.2em] uppercase text-slate-400 font-semibold">Klinikalar uchun CRM</p>
+              <p className="text-[9px] sm:text-[10px] tracking-[0.18em] uppercase text-slate-400 font-semibold hidden sm:block">
+                Dental SaaS
+              </p>
             </div>
           </a>
 
-          <div className="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
-            <a href="#problem" className="hover:text-shifo-primary transition-colors">Muammo</a>
-            <a href="#solution" className="hover:text-shifo-primary transition-colors">Yechim</a>
-            <a href="#modules" className="hover:text-shifo-primary transition-colors">Modullar</a>
-            <a href="#faq" className="hover:text-shifo-primary transition-colors">FAQ</a>
-            <button onClick={onNavigateToGuide} className="hover:text-shifo-primary transition-colors inline-flex items-center gap-1">
-              Qo'llanma <BookOpen className="h-4 w-4" />
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
+            <a href="#features" className="hover:text-shifo-primary transition-colors">{t.nav.features}</a>
+            <a href="#pricing" className="hover:text-shifo-primary transition-colors">{t.nav.pricing}</a>
+            <a href="#contact" className="hover:text-shifo-primary transition-colors">{t.nav.contact}</a>
+          </nav>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language toggle */}
+            <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => switchLang('uz')}
+                className={`px-2.5 py-1.5 rounded-md transition-all ${lang === 'uz' ? 'bg-white text-shifo-navy shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                UZ
+              </button>
+              <button
+                type="button"
+                onClick={() => switchLang('ru')}
+                className={`px-2.5 py-1.5 rounded-md transition-all ${lang === 'ru' ? 'bg-white text-shifo-navy shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                RU
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={openDemo}
+              className="hidden sm:inline-flex bg-shifo-cta text-white px-4 lg:px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-shifo-ctaHover transition-colors shadow-lg shadow-green-500/25"
+            >
+              {t.nav.cta}
             </button>
-          </div>
-
-          <button onClick={() => setDemoOpen(true)} className="bg-shifo-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-shifo-accent transition-colors">
-            Bepul demo so'rash
-          </button>
-        </div>
-      </nav>
-
-      <header id="hero" className="relative overflow-hidden pt-20 pb-16 lg:pt-28 lg:pb-24 bg-gradient-to-b from-shifo-light/50 to-white">
-        <div className="absolute -top-20 -left-16 h-72 w-72 rounded-full bg-shifo-primary/15 blur-3xl animate-float-slow" />
-        <div className="absolute top-16 -right-16 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl animate-float-slow" style={{ animationDelay: '1.2s' }} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="animate-slide-up">
-            <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase bg-white border border-shifo-border rounded-full px-4 py-2 mb-6 text-shifo-primary">
-              <ShieldCheck className="h-4 w-4" /> ShifoCRM
-            </p>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-slate-900 leading-tight tracking-tight">
-              Klinikangiz boshqaruvi — <span className="text-shifo-primary">bitta tizimda</span>
-            </h1>
-            <p className="mt-4 text-2xl font-bold text-shifo-primary">Sotuvga yo‘naltirilgan CRM tajribasi</p>
-            <p className="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
-              ShifoCRM bilan qabul yozuvi, bemor tarixi, to'lovlar, ombor va hisobotlarni real vaqtda boshqaring.
-            </p>
-            <div className="mt-9 flex flex-col sm:flex-row gap-4">
-              <button onClick={() => setDemoOpen(true)} className="bg-slate-900 text-white px-7 py-4 rounded-2xl font-semibold inline-flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors">
-                Bepul demo so'rash <ArrowRight className="h-5 w-5" />
-              </button>
-              <button onClick={() => setDemoOpen(true)} className="bg-white border-2 border-slate-200 text-slate-900 px-7 py-4 rounded-2xl font-semibold inline-flex items-center justify-center hover:border-shifo-primary hover:text-shifo-primary transition-colors">
-                7 kun sinab ko'rish
-              </button>
-            </div>
-            <p className="mt-7 text-sm text-slate-500">
-              Ma'lumotlar xavfsiz saqlanadi • Ko'p filialni qo'llaydi • Mobilga mos
-            </p>
-          </div>
-
-          <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm animate-fade-in">
-            <img src={logoSrc} alt="ShifoCRM" className="h-24 w-24 object-contain mx-auto" />
-            <p className="mt-6 text-center text-slate-900 font-display font-bold text-2xl">ShifoCRM</p>
-            <p className="text-center text-slate-600 mt-3 leading-relaxed">
-              Stomatologiya va klinikalar uchun qabul, bemor, moliya va omborni bir joyda boshqaradigan CRM.
-            </p>
-            <div className="grid grid-cols-3 gap-3 mt-8 text-center">
-              <div className="rounded-xl bg-shifo-light p-3">
-                <p className="font-black text-shifo-primary text-xl">30–50%</p>
-                <p className="text-xs text-slate-500">Vaqt tejaladi</p>
-              </div>
-              <div className="rounded-xl bg-shifo-light p-3">
-                <p className="font-black text-shifo-primary text-xl">↓</p>
-                <p className="text-xs text-slate-500">No-show kamayadi</p>
-              </div>
-              <div className="rounded-xl bg-shifo-light p-3">
-                <p className="font-black text-shifo-primary text-xl">24/7</p>
-                <p className="text-xs text-slate-500">Nazorat</p>
-              </div>
-            </div>
-            <div className="mt-6 rounded-2xl border border-slate-200 p-4 bg-slate-50">
-              <p className="text-sm font-semibold text-slate-700">Jarayon to‘liq boshqaruvda</p>
-              <p className="text-sm text-slate-500 mt-1">Lead → Qabul → Tashrif → To‘lov → Hisobot</p>
-              <div className="mt-3 h-2 w-full rounded-full bg-slate-200 overflow-hidden">
-                <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-shifo-primary to-cyan-400 animate-shimmer" />
-              </div>
-            </div>
           </div>
         </div>
       </header>
 
-      <section className="border-y border-slate-200 bg-slate-50/70 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex items-center gap-8 whitespace-nowrap animate-marquee text-sm font-semibold text-slate-600">
-            <span className="inline-flex items-center gap-2"><Sparkles className="h-4 w-4 text-shifo-primary" /> Sotuvchi landing struktura</span>
-            <span className="inline-flex items-center gap-2"><BellRing className="h-4 w-4 text-shifo-primary" /> Demo so‘rovi Telegramga tushadi</span>
-            <span className="inline-flex items-center gap-2"><Stethoscope className="h-4 w-4 text-shifo-primary" /> Stomatologiya va klinikalarga mos</span>
-            <span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-shifo-primary" /> Ko‘p filial va xavfsiz boshqaruv</span>
-          </div>
-        </div>
-      </section>
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-shifo-light/60 via-white to-white pt-12 pb-16 lg:pt-20 lg:pb-24">
+        <div className="absolute -top-24 -left-20 h-72 w-72 rounded-full bg-shifo-primary/10 blur-3xl" />
+        <div className="absolute top-10 -right-16 h-80 w-80 rounded-full bg-shifo-cta/10 blur-3xl" />
 
-      <section id="problem" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Klinikada vaqtni eng ko'p nima oladi?</h2>
-          <p className="mt-4 text-lg text-slate-600">Qo'lda boshqaruv sabab o'sish sekinlashadi va xatoliklar ko'payadi.</p>
-          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              "Qo'lda jadval yuritish",
-              "Bemorlar tarixini topish qiyin",
-              "No-show ko'p",
-              'Hisobotlar kechikadi',
-              'Ombor nazorati sust',
-              "Qabul xodimining ortiqcha yuklanishi",
-            ].map((item) => (
-              <div key={item} className="bg-white rounded-2xl border border-slate-200 p-5 flex items-start gap-3 hover:-translate-y-1 transition-all animate-fade-in">
-                <CheckCircle2 className="h-5 w-5 mt-0.5 text-red-500" />
-                <p className="font-medium text-slate-700">{item}</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="animate-slide-up">
+              <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase bg-white border border-shifo-border rounded-full px-4 py-2 mb-6 text-shifo-primary shadow-sm">
+                <Stethoscope className="h-4 w-4" />
+                {t.hero.badge}
+              </p>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-display font-extrabold text-shifo-navy leading-[1.12] tracking-tight">
+                {t.hero.headline}
+              </h1>
+
+              <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl">
+                {t.hero.subheadline}
+              </p>
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <button
+                  type="button"
+                  onClick={openDemo}
+                  className="bg-shifo-cta text-white px-8 py-4 rounded-2xl font-bold text-base sm:text-lg inline-flex items-center justify-center gap-2 hover:bg-shifo-ctaHover transition-all shadow-xl shadow-green-500/30 hover:shadow-green-500/40 hover:-translate-y-0.5"
+                >
+                  {t.hero.cta}
+                  <ArrowRight className="h-5 w-5" />
+                </button>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <section id="solution" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">ShifoCRM bilan jarayonlar avtomatlashtiriladi</h2>
-          <div className="mt-10 grid lg:grid-cols-2 gap-5">
-            {[
-              'Qabul jadvali',
-              'Avto eslatmalar',
-              "Lead'dan qabulgacha kuzatuv",
-              "To'lov va qarzdorlik nazorati",
-              'Ombor sarfi hisobi',
-            ].map((item) => (
-              <div key={item} className="bg-shifo-light rounded-2xl border border-shifo-border p-6 flex items-center gap-3 hover:shadow-sm transition-all animate-slide-up">
-                <CheckCircle2 className="h-5 w-5 text-shifo-primary" />
-                <p className="font-semibold text-slate-800">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <p className="mt-5 text-sm font-semibold text-shifo-cta flex items-center gap-2">
+                <Check className="h-4 w-4 shrink-0" />
+                {t.hero.subtext}
+              </p>
 
-      <section id="modules" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Asosiy modullar</h2>
-          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {moduleCards.map((module) => {
-              const Icon = module.icon;
-              return (
-                <article key={module.title} className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-shifo-primary/40 hover:-translate-y-1 transition-all">
-                  <div className="h-11 w-11 rounded-xl bg-shifo-light flex items-center justify-center text-shifo-primary mb-4">
-                    <Icon className="h-6 w-6" />
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">
+                {t.hero.trust.map((item) => (
+                  <li key={item} className="flex items-center gap-1.5">
+                    <ShieldCheck className="h-4 w-4 text-shifo-primary shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Hero visual */}
+            <div className="relative animate-fade-in">
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-shifo-navy/10">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-shifo-light flex items-center justify-center">
+                      <Database className="h-5 w-5 text-shifo-primary" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-shifo-navy text-sm">Smart Cloud Database</p>
+                      <p className="text-xs text-slate-400">2,847 {lang === 'uz' ? 'bemor' : 'пациентов'}</p>
+                    </div>
                   </div>
-                  <h3 className="font-display font-bold text-xl text-slate-900">{module.title}</h3>
-                  <p className="mt-2 text-slate-600 leading-relaxed">{module.description}</p>
+                  <span className="text-xs font-bold bg-green-100 text-green-700 px-2.5 py-1 rounded-full">24/7</span>
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    { name: lang === 'uz' ? 'Aziza R.' : 'Азиза Р.', status: lang === 'uz' ? '6 oy tekshiruv' : '6 мес. осмотр', recall: true },
+                    { name: lang === 'uz' ? 'Jasur K.' : 'Жасур К.', status: lang === 'uz' ? 'Ertaga qabul' : 'Завтра приём', recall: false },
+                    { name: lang === 'uz' ? 'Dilnoza M.' : 'Дилноза М.', status: lang === 'uz' ? 'SMS yuborildi' : 'SMS отправлено', recall: true },
+                  ].map((patient) => (
+                    <div key={patient.name} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-shifo-primary to-shifo-secondary flex items-center justify-center text-white text-xs font-bold">
+                          {patient.name[0]}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm text-slate-800">{patient.name}</p>
+                          <p className="text-xs text-slate-500">{patient.status}</p>
+                        </div>
+                      </div>
+                      {patient.recall && (
+                        <span className="flex items-center gap-1 text-xs font-semibold text-shifo-cta">
+                          <BellRing className="h-3.5 w-3.5" />
+                          Recall
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-shifo-navy to-shifo-dark text-white">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <MessageCircle className="h-4 w-4 text-shifo-cta" />
+                    {lang === 'uz' ? 'Avtomatik eslatma yuborildi' : 'Авто-напоминание отправлено'}
+                  </div>
+                  <p className="mt-1 text-xs text-slate-300">
+                    {lang === 'uz'
+                      ? '"Hurmatli Aziza, 6 oylik tekshiruv vaqtingiz keldi!"'
+                      : '"Уважаемая Азиза, пора на 6-месячный осмотр!"'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SALES STRENGTHS */}
+      <section className="py-12 lg:py-16 bg-shifo-navy text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-xl sm:text-2xl font-display font-extrabold tracking-tight mb-8">
+            {t.salesStrengths.title}
+          </h2>
+          <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+            {t.salesStrengths.items.map((item, i) => {
+              const Icon = i === 0 ? Headphones : ArrowRightLeft;
+              return (
+                <article
+                  key={item.title}
+                  className="flex gap-5 bg-white/10 backdrop-blur border border-white/15 rounded-2xl p-6 hover:bg-white/15 transition-colors"
+                >
+                  <div className="h-14 w-14 rounded-2xl bg-shifo-cta/20 flex items-center justify-center shrink-0">
+                    <Icon className="h-7 w-7 text-shifo-cta" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-shifo-cta">{item.title}</h3>
+                    <p className="mt-2 text-slate-300 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
                 </article>
               );
             })}
@@ -325,195 +662,325 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
         </div>
       </section>
 
-      <section id="results" className="py-20">
+      {/* PROBLEM */}
+      <section id="problem" className="py-16 lg:py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Natijalar</h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border border-slate-200 p-6 bg-white hover:-translate-y-1 transition-all">
-              <Clock3 className="h-8 w-8 text-shifo-primary" />
-              <p className="mt-4 font-semibold text-slate-900">Qabulni boshqarishga ketadigan vaqtni 30–50% gacha qisqartiradi.</p>
-            </div>
-            <div className="rounded-2xl border border-slate-200 p-6 bg-white hover:-translate-y-1 transition-all">
-              <MessageCircle className="h-8 w-8 text-shifo-primary" />
-              <p className="mt-4 font-semibold text-slate-900">No-show holatlarini eslatmalar orqali kamaytiradi.</p>
-            </div>
-            <div className="rounded-2xl border border-slate-200 p-6 bg-white hover:-translate-y-1 transition-all">
-              <Building2 className="h-8 w-8 text-shifo-primary" />
-              <p className="mt-4 font-semibold text-slate-900">Moliya va ombor bo'yicha shaffof nazorat beradi.</p>
-            </div>
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl lg:text-4xl font-display font-extrabold text-shifo-navy tracking-tight">
+              {t.problems.title}
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">{t.problems.subtitle}</p>
           </div>
-        </div>
-      </section>
 
-      <section id="integrations" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Integratsiyalar</h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-6">
-            <div className="bg-white border border-slate-200 rounded-2xl p-6">
-              <Send className="h-8 w-8 text-shifo-primary" />
-              <h3 className="mt-4 font-bold text-slate-900">Telegram</h3>
-              <p className="mt-2 text-slate-600">Leadlarni qabul qilish va xabarnoma yuborish jarayonlarini soddalashtiring.</p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl p-6">
-              <Phone className="h-8 w-8 text-shifo-primary" />
-              <h3 className="mt-4 font-bold text-slate-900">WhatsApp / Telefon</h3>
-              <p className="mt-2 text-slate-600">Qabul tasdiqlash, eslatma va tezkor aloqa uchun qulay ulanishlar.</p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl p-6">
-              <Cloud className="h-8 w-8 text-shifo-primary" />
-              <h3 className="mt-4 font-bold text-slate-900">Supabase / Cloud</h3>
-              <p className="mt-2 text-slate-600">Ma'lumotlar bulutda xavfsiz saqlanadi va filiallar bo'yicha boshqariladi.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="faq" className="py-20 bg-slate-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold text-slate-900 tracking-tight">FAQ</h2>
-          <div className="mt-10 space-y-4">
-            {faqItems.map((item) => (
-              <details key={item.q} className="group bg-white border border-slate-200 rounded-2xl p-6">
-                <summary className="list-none cursor-pointer flex items-center justify-between gap-3 font-bold text-slate-900">
-                  <span>Savol: {item.q}</span>
-                  <ChevronRight className="h-5 w-5 text-slate-400 group-open:rotate-90 transition-transform" />
-                </summary>
-                <p className="mt-2 text-slate-600">Javob: {item.a}</p>
-              </details>
+          <div className="grid md:grid-cols-3 gap-6">
+            {t.problems.cards.map((card, i) => (
+              <article
+                key={card.title}
+                className="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 hover:border-red-200 hover:shadow-lg hover:shadow-red-500/5 transition-all hover:-translate-y-1"
+              >
+                <div className="h-12 w-12 rounded-xl bg-red-50 flex items-center justify-center text-red-500 font-black text-xl mb-5">
+                  {i + 1}
+                </div>
+                <h3 className="font-display font-bold text-xl text-shifo-navy">{card.title}</h3>
+                <p className="mt-3 text-slate-600 leading-relaxed">{card.desc}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="final-cta" className="py-20 bg-slate-900 text-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-5xl font-display font-extrabold tracking-tight">Qog'ozsiz ishlashga bugun o'ting</h2>
-          <p className="mt-5 text-slate-300 text-lg">
-            Qabulni tezlashtiring, xatolikni kamaytiring va qaytuvchi bemorlar sonini oshiring.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-            <button onClick={() => setDemoOpen(true)} className="bg-white text-slate-900 px-7 py-4 rounded-2xl font-semibold hover:bg-slate-100 transition-colors">Bepul demo so'rash</button>
-            <button onClick={() => setDemoOpen(true)} className="border border-white/40 px-7 py-4 rounded-2xl font-semibold hover:bg-white/10 transition-colors">7 kun sinab ko'rish</button>
+      {/* SOLUTION / FEATURES */}
+      <section id="features" className="py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-3xl lg:text-4xl font-display font-extrabold text-shifo-navy tracking-tight">
+              {t.solution.title}
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">{t.solution.subtitle}</p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {t.solution.blocks.map((block, i) => {
+              const Icon = i === 0 ? Cloud : BellRing;
+              return (
+                <article
+                  key={block.title}
+                  className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 lg:p-10 hover:border-shifo-primary/30 hover:shadow-xl transition-all"
+                >
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-shifo-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform" />
+                  <div className="relative">
+                    <div className="h-14 w-14 rounded-2xl bg-shifo-light flex items-center justify-center text-shifo-primary mb-6">
+                      <Icon className="h-7 w-7" />
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-shifo-primary mb-2">{block.subtitle}</p>
+                    <h3 className="font-display font-extrabold text-2xl text-shifo-navy">{block.title}</h3>
+                    <p className="mt-4 text-slate-600 leading-relaxed text-lg">{block.desc}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <footer id="contact" className="py-12 bg-slate-950 text-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* OBJECTION HANDLING */}
+      <section className="py-16 lg:py-20 bg-shifo-navy text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <h2 className="text-3xl lg:text-4xl font-display font-extrabold tracking-tight leading-tight">
+                {t.objection.title}
+              </h2>
+              <p className="mt-5 text-lg text-slate-300 leading-relaxed">{t.objection.text}</p>
+              <button
+                type="button"
+                onClick={openDemo}
+                className="mt-8 bg-shifo-cta text-white px-7 py-4 rounded-2xl font-bold hover:bg-shifo-ctaHover transition-colors inline-flex items-center gap-2 shadow-lg shadow-green-500/25"
+              >
+                {t.hero.cta}
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-4">
+              {t.objection.points.map((point) => (
+                <div key={point} className="flex items-center gap-4 bg-white/10 backdrop-blur rounded-2xl p-5 border border-white/10">
+                  <div className="h-10 w-10 rounded-xl bg-shifo-cta/20 flex items-center justify-center shrink-0">
+                    <Check className="h-5 w-5 text-shifo-cta" />
+                  </div>
+                  <p className="font-semibold">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section id="pricing" className="py-16 lg:py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-3xl lg:text-4xl font-display font-extrabold text-shifo-navy tracking-tight">
+              {t.pricing.title}
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">{t.pricing.subtitle}</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto items-start">
+            {t.pricing.plans.map((plan) => (
+              <article
+                key={plan.name}
+                className={`relative rounded-3xl border bg-white p-8 flex flex-col ${
+                  'popular' in plan && plan.popular
+                    ? 'border-shifo-primary shadow-xl shadow-shifo-primary/10 scale-[1.02]'
+                    : 'border-slate-200 hover:border-shifo-primary/30 hover:shadow-lg'
+                } transition-all`}
+              >
+                {'popular' in plan && plan.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-shifo-primary text-white text-xs font-bold px-4 py-1 rounded-full">
+                    {t.pricing.popular}
+                  </span>
+                )}
+                <h3 className="font-display font-extrabold text-xl text-shifo-navy">{plan.name}</h3>
+                <p className="mt-2 text-sm text-slate-500">{plan.desc}</p>
+                <div className="mt-6">
+                  <p className="text-3xl font-black text-shifo-navy">{plan.price}</p>
+                  {'priceNote' in plan && plan.priceNote ? (
+                    <p className="text-sm text-shifo-primary font-bold mt-1">{t.pricing.perDoctor}</p>
+                  ) : (
+                    <p className="text-sm text-slate-500 font-medium mt-1">{t.pricing.perMonth}</p>
+                  )}
+                </div>
+                {'priceNote' in plan && plan.priceNote && (
+                  <p className="mt-3 text-xs font-semibold text-slate-500 bg-slate-100 rounded-lg px-3 py-2">
+                    {t.pricing.example}
+                  </p>
+                )}
+                <ul className="mt-6 space-y-4 flex-1">
+                  {plan.features.map((feature) => (
+                    <li key={feature.title} className="flex items-start gap-2.5 text-sm">
+                      <Check className="h-4 w-4 text-shifo-cta shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-semibold text-slate-800 leading-snug">{feature.title}</p>
+                        {feature.desc ? (
+                          <p className="mt-0.5 text-slate-500 leading-relaxed">{feature.desc}</p>
+                        ) : null}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  type="button"
+                  onClick={openDemo}
+                  className={`mt-8 w-full py-3.5 rounded-xl font-bold transition-colors ${
+                    'popular' in plan && plan.popular
+                      ? 'bg-shifo-cta text-white hover:bg-shifo-ctaHover shadow-lg shadow-green-500/20'
+                      : 'bg-shifo-navy text-white hover:bg-shifo-dark'
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER CTA */}
+      <section className="py-16 lg:py-20 bg-gradient-to-br from-shifo-navy via-shifo-dark to-shifo-navy text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl lg:text-5xl font-display font-extrabold tracking-tight">
+            {t.footerCta.title}
+          </h2>
+          <p className="mt-5 text-lg text-slate-300">{t.footerCta.subtitle}</p>
+          <button
+            type="button"
+            onClick={openDemo}
+            className="mt-8 bg-shifo-cta text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-shifo-ctaHover transition-all inline-flex items-center gap-2 shadow-xl shadow-green-500/30 hover:-translate-y-0.5"
+          >
+            {t.footerCta.cta}
+            <ArrowRight className="h-5 w-5" />
+          </button>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer id="contact" className="py-12 bg-slate-950 text-slate-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           <div>
-            <p className="font-display font-extrabold text-2xl text-white">ShifoCRM</p>
-            <p className="mt-3 text-slate-400 leading-relaxed">
-              Asosiy va'da: qog'ozsiz ishlash, tezroq qabul, kamroq xatolik, ko'proq qaytuvchi bemor.
+            <p className="font-display font-extrabold text-2xl text-white">
+              SHIFO<span className="text-shifo-primary">CRM</span>
             </p>
+            <p className="mt-3 text-slate-400 leading-relaxed text-sm">
+              {t.hero.subheadline}
+            </p>
+            <button
+              type="button"
+              onClick={onNavigateToGuide}
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-shifo-primary hover:text-shifo-secondary transition-colors"
+            >
+              <BookOpen className="h-4 w-4" />
+              {t.contact.guide}
+            </button>
           </div>
 
-          <div className="space-y-3">
-            <p className="font-semibold text-white">Kontakt</p>
-            <p className="flex items-center gap-2"><Phone className="h-4 w-4" /> +998 XX XXX XX XX</p>
-            <p className="flex items-center gap-2"><Send className="h-4 w-4" /> @your_username</p>
-            <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> info@domain.uz</p>
-            <p className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Shahar, ko'cha, mo'ljal</p>
-            <p className="flex items-center gap-2"><Smartphone className="h-4 w-4" /> Dush–Shan, 09:00–19:00</p>
+          <div className="space-y-3 text-sm">
+            <p className="font-semibold text-white text-base">{t.contact.title}</p>
+            <a href="tel:+998940542722" className="flex items-center gap-2 hover:text-white transition-colors">
+              <Phone className="h-4 w-4 text-shifo-primary shrink-0" /> +998 94 054 27 22
+            </a>
+            <p className="flex items-center gap-2"><Send className="h-4 w-4 text-shifo-primary" /> @shifocrm</p>
+            <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-shifo-primary" /> Toshkent, O&apos;zbekiston</p>
+            <p className="flex items-center gap-2"><Smartphone className="h-4 w-4 text-shifo-primary" /> {t.contact.hours}</p>
           </div>
 
-          <div className="space-y-3">
-            <p className="font-semibold text-white">Huquqiy sahifalar</p>
-            <a href="#" className="block hover:text-white transition-colors">Maxfiylik siyosati</a>
-            <a href="#" className="block hover:text-white transition-colors">Foydalanish shartlari</a>
-            <a href="#" className="block hover:text-white transition-colors">Ommaviy oferta</a>
-            <p className="pt-2 text-slate-500 text-sm">© 2026 ShifoCRM. Barcha huquqlar himoyalangan.</p>
+          <div className="space-y-3 text-sm">
+            <p className="font-semibold text-white text-base">ShifoCRM</p>
+            <a href="#features" className="block hover:text-white transition-colors">{t.nav.features}</a>
+            <a href="#pricing" className="block hover:text-white transition-colors">{t.nav.pricing}</a>
+            <a href="#contact" className="block hover:text-white transition-colors">{t.nav.contact}</a>
+            <p className="pt-4 text-slate-500">© 2026 ShifoCRM. {t.contact.rights}</p>
           </div>
         </div>
       </footer>
 
+      {/* Mobile sticky CTA */}
       <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-slate-200 p-3">
         <div className="grid grid-cols-2 gap-2">
-          <button onClick={() => setDemoOpen(true)} className="bg-slate-900 text-white text-center py-3 rounded-xl font-semibold text-sm">Demo so'rash</button>
-          <a href="tel:+998000000000" className="bg-shifo-light text-shifo-primary text-center py-3 rounded-xl font-semibold text-sm">Qo'ng'iroq qilish</a>
+          <button type="button" onClick={openDemo} className="bg-shifo-cta text-white text-center py-3 rounded-xl font-bold text-sm">
+            {t.mobile.trial}
+          </button>
+          <a href="tel:+998940542722" className="bg-shifo-navy text-white text-center py-3 rounded-xl font-semibold text-sm flex items-center justify-center">
+            {t.mobile.call}
+          </a>
         </div>
       </div>
 
+      {/* Demo modal */}
       {demoOpen && (
-        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-slate-950/50 px-3 sm:px-4 py-3 sm:py-6 backdrop-blur-sm">
-          <div className="w-full max-w-2xl bg-white text-slate-900 rounded-[28px] sm:rounded-[36px] shadow-2xl border border-slate-200 overflow-hidden animate-modal-pop">
+        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center bg-shifo-navy/60 px-3 sm:px-4 py-3 sm:py-6 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-white text-slate-900 rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-slide-up">
             <div className="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-slate-100">
               <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-400 font-semibold">Demo so'rovi</p>
-                <h3 className="mt-2 text-2xl font-display font-bold">ShifoCRM demo uchun ma'lumot qoldiring</h3>
+                <p className="text-xs uppercase tracking-widest text-shifo-primary font-bold">{t.demo.title}</p>
+                <p className="mt-1 text-sm text-slate-500">{t.demo.subtitle}</p>
               </div>
-              <button onClick={() => setDemoOpen(false)} className="h-10 w-10 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-500">
-                ×
+              <button
+                type="button"
+                onClick={() => setDemoOpen(false)}
+                className="h-10 w-10 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-500"
+              >
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleDemoSubmit} className="p-5 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <label className="block text-sm font-semibold text-slate-700">
-                  Klinikangiz nomi *
-                  <input
-                    value={demoForm.clinicName}
-                    onChange={(e) => setDemoForm((prev) => ({ ...prev, clinicName: e.target.value }))}
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-primary/40"
-                    placeholder="Masalan: City Dental"
-                    required
-                  />
-                </label>
-
-                <label className="block text-sm font-semibold text-slate-700">
-                  Telefon *
-                  <input
-                    value={demoForm.phone}
-                    onChange={(e) => setDemoForm((prev) => ({ ...prev, phone: e.target.value }))}
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-primary/40"
-                    placeholder="+998 __ ___ __ __"
-                    required
-                  />
-                </label>
-              </div>
-
+            <form onSubmit={handleDemoSubmit} className="p-5 sm:p-6 space-y-4">
               <label className="block text-sm font-semibold text-slate-700">
-                Ism-sharif
+                {t.demo.clinic} *
                 <input
-                  value={demoForm.fullName}
-                  onChange={(e) => setDemoForm((prev) => ({ ...prev, fullName: e.target.value }))}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-primary/40"
-                  placeholder="F.I.O"
+                  value={demoForm.clinicName}
+                  onChange={(e) => setDemoForm((prev) => ({ ...prev, clinicName: e.target.value }))}
+                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-cta/40"
+                  required
                 />
               </label>
 
               <label className="block text-sm font-semibold text-slate-700">
-                Xabar
+                {t.demo.phone} *
+                <input
+                  value={demoForm.phone}
+                  onChange={(e) => setDemoForm((prev) => ({ ...prev, phone: e.target.value }))}
+                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-cta/40"
+                  placeholder="+998 __ ___ __ __"
+                  required
+                />
+              </label>
+
+              <label className="block text-sm font-semibold text-slate-700">
+                {t.demo.name}
+                <input
+                  value={demoForm.fullName}
+                  onChange={(e) => setDemoForm((prev) => ({ ...prev, fullName: e.target.value }))}
+                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-cta/40"
+                />
+              </label>
+
+              <label className="block text-sm font-semibold text-slate-700">
+                {t.demo.message}
                 <textarea
                   value={demoForm.message}
                   onChange={(e) => setDemoForm((prev) => ({ ...prev, message: e.target.value }))}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-primary/40"
-                  rows={4}
-                  placeholder="Qisqa izoh..."
+                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-shifo-cta/40"
+                  rows={3}
                 />
               </label>
 
               {demoStatus === 'success' && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-3">
-                  <p className="text-sm text-green-800 font-semibold">✅ So'rov muvaffaqiyatli yuborildi! Tez orada siz bilan bog'lanamiz.</p>
+                <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-sm text-green-800 font-semibold">
+                  ✅ {t.demo.success}
                 </div>
               )}
 
               {demoStatus === 'error' && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-                  <p className="text-sm text-red-800 font-semibold">❌ Xatolik: {demoError || 'Telegram sozlamalarini tekshiring.'}</p>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-800 font-semibold">
+                  ❌ {demoError || t.demo.error}
                 </div>
               )}
 
-              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setDemoOpen(false)} className="px-5 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
-                  Bekor qilish
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDemoOpen(false)}
+                  className="px-5 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50"
+                >
+                  {t.demo.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={demoSubmitting}
-                  className="px-6 py-3 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-colors disabled:opacity-60"
+                  className="px-6 py-3 rounded-xl bg-shifo-cta text-white font-bold hover:bg-shifo-ctaHover disabled:opacity-60"
                 >
-                  {demoSubmitting ? 'Yuborilmoqda...' : 'So‘rov yuborish'}
+                  {demoSubmitting ? t.demo.sending : t.demo.submit}
                 </button>
               </div>
             </form>
