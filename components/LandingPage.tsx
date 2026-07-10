@@ -35,7 +35,11 @@ const translations = {
     },
     hero: {
       badge: 'Stomatologiyalar uchun bulutli CRM',
-      headline: "Bemorlarni 'bir martalik' qilmang — umrbod mijozga aylantiring!",
+      headline: {
+        before: 'Bemorlarni ',
+        highlight: 'bir martalik',
+        after: ' qilmang — umrbod mijozga aylantiring!',
+      },
       subheadline:
         'ShifoCRM — stomatologiyalar uchun bemorlar bazasini xavfsiz saqlash va ularni avtomatik qabulga qaytarish tizimi.',
       cta: '7 kunlik BEPUL sinovni boshlash',
@@ -220,7 +224,11 @@ const translations = {
     },
     hero: {
       badge: 'Облачная CRM для стоматологий',
-      headline: "Не делайте пациентов 'одноразовыми' — превратите в постоянных клиентов!",
+      headline: {
+        before: 'Не делайте пациентов ',
+        highlight: 'одноразовыми',
+        after: ' — превратите в постоянных клиентов!',
+      },
       subheadline:
         'ShifoCRM — умная база данных и система автоматического возврата пациентов, созданная специально для стоматологий.',
       cta: 'Начать 7 дней БЕСПЛАТНО',
@@ -401,8 +409,24 @@ const translations = {
 const TELEGRAM_BOT_TOKEN = '8537318966:AAFImCxi9M_vjhjKmWvy0jXaVYm_Fvn_L_U';
 const TELEGRAM_CHAT_ID = '7736700647';
 
+const seoMeta = {
+  uz: {
+    title: 'ShifoCRM — Stomatologiya klinikasi uchun CRM tizimi | Bemorlar bazasi',
+    description:
+      'Stomatologiya klinikalari uchun ShifoCRM — bemorlar bazasi, onlayn qabul, avtomatik eslatmalar, KPI va moliya tahlili. 7 kun bepul sinov.',
+  },
+  ru: {
+    title: 'ShifoCRM — CRM для стоматологической клиники | База пациентов',
+    description:
+      'ShifoCRM для стоматологических клиник — база пациентов, онлайн-запись, автоматические напоминания и финансовая аналитика. 7 дней бесплатно.',
+  },
+} as const;
+
 const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
   const [lang, setLang] = useState<Lang>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlLang = params.get('lang');
+    if (urlLang === 'ru' || urlLang === 'uz') return urlLang;
     const saved = localStorage.getItem('shifocrm-lang');
     return saved === 'ru' ? 'ru' : 'uz';
   });
@@ -423,6 +447,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
   useEffect(() => {
     localStorage.setItem('shifocrm-lang', lang);
     document.documentElement.lang = lang;
+    document.title = seoMeta[lang].title;
+
+    const descriptionTag = document.querySelector('meta[name="description"]');
+    if (descriptionTag) {
+      descriptionTag.setAttribute('content', seoMeta[lang].description);
+    }
+
+    const url = new URL(window.location.href);
+    if (lang === 'ru') {
+      url.searchParams.set('lang', 'ru');
+    } else {
+      url.searchParams.delete('lang');
+    }
+    window.history.replaceState(null, '', `${url.pathname}${url.search}`);
   }, [lang]);
 
   const switchLang = (next: Lang) => setLang(next);
@@ -542,7 +580,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
               </p>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-display font-extrabold text-shifo-navy leading-[1.12] tracking-tight">
-                {t.hero.headline}
+                {t.hero.headline.before}
+                <span className="text-shifo-cta">&apos;{t.hero.headline.highlight}&apos;</span>
+                {t.hero.headline.after}
               </h1>
 
               <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl">

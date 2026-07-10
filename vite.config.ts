@@ -4,10 +4,18 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    const seoHeaders = {
+      'X-Robots-Tag': 'index, follow',
+    };
+
     return {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        headers: seoHeaders,
+      },
+      preview: {
+        headers: seoHeaders,
       },
       plugins: [react()],
       define: {
