@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Smartphone,
   Stethoscope,
+  ChevronRight,
   X,
 } from 'lucide-react';
 
@@ -30,11 +31,13 @@ const translations = {
     nav: {
       features: 'Xususiyatlar',
       pricing: 'Tariflar',
+      faq: 'FAQ',
       contact: 'Aloqa',
       cta: '7 kun bepul sinash',
     },
     hero: {
       badge: 'Stomatologiyalar uchun bulutli CRM',
+      h1: 'Stomatologiya va klinikalar uchun zamonaviy CRM tizimi',
       headline: {
         before: 'Bemorlarni ',
         highlight: 'bir martalik',
@@ -186,6 +189,20 @@ const translations = {
       ],
       popular: 'Eng mashhur',
     },
+    faq: {
+      title: 'Tez-tez beriladigan savollar',
+      subtitle: 'Stomatologiya CRM va ShifoCRM haqida eng muhim javoblar.',
+      items: [
+        {
+          q: "O'zbekistonda stomatologiya uchun qaysi CRM dasturi yaxshi?",
+          a: "ShifoCRM — O'zbekistondagi stomatologiya va tibbiyot klinikalariga moslashtirilgan, tish xaritasi, ombor nazorati va avtomatik SMS xabarnomalar tizimiga ega zamonaviy CRM dasturidir.",
+        },
+        {
+          q: 'ShifoCRM qanday imkoniyatlarni beradi?',
+          a: 'Bemorlar kartasi, tish xaritasi, ombor va materiallar sarfi nazorati, SMS va Telegram-bot eslatmalari, shifokorlar KPI hisob-kitobi.',
+        },
+      ],
+    },
     footerCta: {
       title: 'Klinikangizni yangi bosqichga olib chiqing',
       subtitle: '7 kun bepul sinab ko\'ring. Eski bazangizni tizimga qo\'shamiz va 24/7 qo\'llab-quvvatlaymiz.',
@@ -219,11 +236,13 @@ const translations = {
     nav: {
       features: 'Возможности',
       pricing: 'Тарифы',
+      faq: 'FAQ',
       contact: 'Контакты',
       cta: 'Попробовать 7 дней бесплатно',
     },
     hero: {
       badge: 'Облачная CRM для стоматологий',
+      h1: 'Современная CRM-система для стоматологии и клиник',
       headline: {
         before: 'Не делайте пациентов ',
         highlight: 'одноразовыми',
@@ -375,6 +394,20 @@ const translations = {
       ],
       popular: 'Популярный',
     },
+    faq: {
+      title: 'Часто задаваемые вопросы',
+      subtitle: 'Самые важные ответы о CRM для стоматологии и ShifoCRM.',
+      items: [
+        {
+          q: 'Какая CRM программа лучше для стоматологии в Узбекистане?',
+          a: 'ShifoCRM — современная CRM-программа, адаптированная для стоматологических и медицинских клиник Узбекистана, с зубной картой, контролем склада и автоматическими SMS-уведомлениями.',
+        },
+        {
+          q: 'Какие возможности даёт ShifoCRM?',
+          a: 'Карта пациента, зубная карта, контроль склада и расхода материалов, SMS и Telegram-бот напоминания, расчёт KPI врачей.',
+        },
+      ],
+    },
     footerCta: {
       title: 'Переведите клинику на новый уровень',
       subtitle: 'Попробуйте 7 дней бесплатно. Добавим старую базу в систему и обеспечим поддержку 24/7.',
@@ -411,14 +444,14 @@ const TELEGRAM_CHAT_ID = '7736700647';
 
 const seoMeta = {
   uz: {
-    title: 'ShifoCRM — Stomatologiya klinikasi uchun CRM tizimi | Bemorlar bazasi',
+    title: 'ShifoCRM — Stomatologiya va Tibbiyot Klinikasi Uchun CRM Dasturi',
     description:
-      'Stomatologiya klinikalari uchun ShifoCRM — bemorlar bazasi, onlayn qabul, avtomatik eslatmalar, KPI va moliya tahlili. 7 kun bepul sinov.',
+      "O'zbekistondagi stomatologiya va klinikalar uchun avtomatlashtirilgan boshqaruv tizimi. Elektron bemor kartasi, tish xaritasi, ombor nazorati va avtomatik SMS eslatmalar.",
   },
   ru: {
-    title: 'ShifoCRM — CRM для стоматологической клиники | База пациентов',
+    title: 'ShifoCRM — CRM программа для стоматологии и медицинской клиники',
     description:
-      'ShifoCRM для стоматологических клиник — база пациентов, онлайн-запись, автоматические напоминания и финансовая аналитика. 7 дней бесплатно.',
+      'Автоматизированная система управления для стоматологий и клиник Узбекистана. Электронная карта пациента, зубная карта, контроль склада и автоматические SMS.',
   },
 } as const;
 
@@ -533,6 +566,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
           <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
             <a href="#features" className="hover:text-shifo-primary transition-colors">{t.nav.features}</a>
             <a href="#pricing" className="hover:text-shifo-primary transition-colors">{t.nav.pricing}</a>
+            <a href="#faq" className="hover:text-shifo-primary transition-colors">{t.nav.faq}</a>
             <a href="#contact" className="hover:text-shifo-primary transition-colors">{t.nav.contact}</a>
           </nav>
 
@@ -580,10 +614,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
               </p>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-display font-extrabold text-shifo-navy leading-[1.12] tracking-tight">
+                {t.hero.h1}
+              </h1>
+
+              <p className="mt-5 text-xl sm:text-2xl font-display font-bold text-slate-800 leading-snug">
                 {t.hero.headline.before}
                 <span className="text-shifo-cta">&apos;{t.hero.headline.highlight}&apos;</span>
                 {t.hero.headline.after}
-              </h1>
+              </p>
 
               <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl">
                 {t.hero.subheadline}
@@ -866,6 +904,33 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="py-16 lg:py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-display font-extrabold text-shifo-navy tracking-tight">
+              {t.faq.title}
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">{t.faq.subtitle}</p>
+          </div>
+
+          <div className="space-y-4">
+            {t.faq.items.map((item) => (
+              <details
+                key={item.q}
+                className="group bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 open:bg-white open:shadow-sm open:border-shifo-primary/20"
+              >
+                <summary className="list-none cursor-pointer flex items-start justify-between gap-4 font-display font-bold text-lg text-shifo-navy [&::-webkit-details-marker]:hidden">
+                  <span>{item.q}</span>
+                  <ChevronRight className="h-5 w-5 text-slate-400 shrink-0 mt-1 group-open:rotate-90 transition-transform" />
+                </summary>
+                <p className="mt-4 text-slate-600 leading-relaxed">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER CTA */}
       <section className="py-16 lg:py-20 bg-gradient-to-br from-shifo-navy via-shifo-dark to-shifo-navy text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -918,6 +983,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToGuide }) => {
             <p className="font-semibold text-white text-base">ShifoCRM</p>
             <a href="#features" className="block hover:text-white transition-colors">{t.nav.features}</a>
             <a href="#pricing" className="block hover:text-white transition-colors">{t.nav.pricing}</a>
+            <a href="#faq" className="block hover:text-white transition-colors">{t.nav.faq}</a>
             <a href="#contact" className="block hover:text-white transition-colors">{t.nav.contact}</a>
             <p className="pt-4 text-slate-500">© 2026 ShifoCRM. {t.contact.rights}</p>
           </div>

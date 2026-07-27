@@ -11,21 +11,21 @@
   <link rel="alternate" hreflang="ru" href="https://shifocrm.uz/?lang=ru">
   <link rel="alternate" hreflang="x-default" href="https://shifocrm.uz/">
   <link rel="icon" type="image/png" href="/img/shifocrm_logo.png">
-  <title>ShifoCRM — Stomatologiya klinikasi uchun CRM tizimi | Bemorlar bazasi</title>
-  <meta name="description" content="Stomatologiya klinikalari uchun ShifoCRM — bemorlar bazasi, onlayn qabul, avtomatik eslatmalar, KPI va moliya tahlili. 7 kun bepul sinov. O'zbekiston stomatologlari uchun.">
-  <meta name="keywords" content="stomatologiya, stomatologiya crm, stomatologiya dasturi, stomatologiya klinikasi dasturi, bemorlar bazasi, stomatologiya boshqaruvi, shifo crm, klinika crm, qabul tizimi, stomatolog dasturi">
+  <title>ShifoCRM — Stomatologiya va Tibbiyot Klinikasi Uchun CRM Dasturi</title>
+  <meta name="description" content="O'zbekistondagi stomatologiya va klinikalar uchun avtomatlashtirilgan boshqaruv tizimi. Elektron bemor kartasi, tish xaritasi, ombor nazorati va avtomatik SMS eslatmalar.">
+  <meta name="keywords" content="stomatologiya crm, klinika dasturi, shifocrm, stomatologik dastur O'zbekiston, bemorlar bazasi, tish xaritasi, klinika ombor nazorati">
   <meta name="author" content="ShifoCRM">
   <meta property="og:site_name" content="ShifoCRM">
-  <meta property="og:title" content="ShifoCRM — Stomatologiya klinikasi uchun CRM tizimi">
-  <meta property="og:description" content="Stomatologiya klinikalari uchun bemorlar bazasi, onlayn qabul va avtomatik eslatmalar. 7 kun bepul sinov.">
+  <meta property="og:title" content="ShifoCRM — Stomatologiya va Tibbiyot Klinikasi Uchun CRM Dasturi">
+  <meta property="og:description" content="O'zbekistondagi stomatologiya va klinikalar uchun avtomatlashtirilgan boshqaruv tizimi. Elektron bemor kartasi, tish xaritasi, ombor nazorati va avtomatik SMS eslatmalar.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://shifocrm.uz/">
   <meta property="og:locale" content="uz_UZ">
   <meta property="og:locale:alternate" content="ru_RU">
   <meta property="og:image" content="https://shifocrm.uz/img/shifocrm_logo.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ShifoCRM — Stomatologiya CRM tizimi">
-  <meta name="twitter:description" content="Stomatologiya klinikalari uchun bemorlar bazasi va qabul boshqaruvi.">
+  <meta name="twitter:title" content="ShifoCRM — Stomatologiya va Tibbiyot Klinikasi Uchun CRM Dasturi">
+  <meta name="twitter:description" content="O'zbekistondagi stomatologiya va klinikalar uchun avtomatlashtirilgan boshqaruv tizimi. Elektron bemor kartasi, tish xaritasi, ombor nazorati va avtomatik SMS eslatmalar.">
   <meta name="twitter:image" content="https://shifocrm.uz/img/shifocrm_logo.png">
   <script type="application/ld+json">
     {
@@ -36,14 +36,20 @@
           "@id": "https://shifocrm.uz/#organization",
           "name": "ShifoCRM",
           "url": "https://shifocrm.uz/",
-          "logo": "https://shifocrm.uz/img/shifocrm_logo.png",
-          "description": "Stomatologiya klinikalari uchun bulutli CRM tizimi.",
-          "areaServed": "UZ",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://shifocrm.uz/img/shifocrm_logo.png"
+          },
+          "description": "Stomatologiya va tibbiyot klinikalari uchun bulutli CRM dasturi.",
+          "areaServed": {
+            "@type": "Country",
+            "name": "Uzbekistan"
+          },
           "contactPoint": {
             "@type": "ContactPoint",
             "telephone": "+998940542722",
             "contactType": "sales",
-            "availableLanguage": ["Uzbek", "Russian"]
+            "availableLanguage": ["uz", "ru"]
           }
         },
         {
@@ -52,30 +58,99 @@
           "name": "ShifoCRM",
           "applicationCategory": "BusinessApplication",
           "applicationSubCategory": "Dental Practice Management Software",
-          "operatingSystem": "Web",
+          "operatingSystem": "Web, PWA",
           "url": "https://shifocrm.uz/",
-          "description": "Stomatologiya klinikalari uchun bemorlar bazasi, onlayn qabul, avtomatik eslatmalar va moliya tahlili.",
-          "offers": {
-            "@type": "Offer",
-            "price": "150000",
-            "priceCurrency": "UZS",
-            "description": "Yakka stomatologlar uchun oylik tarif"
-          },
+          "image": "https://shifocrm.uz/img/shifocrm_logo.png",
+          "description": "O'zbekistondagi stomatologiya va tibbiyot klinikalariga mo'ljallangan CRM dasturi: elektron bemor kartasi, tish xaritasi, ombor nazorati, SMS/Telegram eslatmalar va shifokorlar KPI hisobi.",
+          "featureList": [
+            "Elektron bemor kartasi va bemorlar bazasi",
+            "Tish xaritasi (odontogramma)",
+            "Ombor va materiallar sarfi nazorati",
+            "Avtomatik SMS eslatmalar",
+            "Telegram-bot eslatmalari",
+            "Onlayn qabul (QR/link)",
+            "Shifokorlar KPI hisob-kitobi",
+            "Moliya va kassa nazorati"
+          ],
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Yakka Doktor",
+              "price": "150000",
+              "priceCurrency": "UZS",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "url": "https://shifocrm.uz/#pricing",
+              "description": "Yakka stomatologlar uchun oylik tarif"
+            },
+            {
+              "@type": "Offer",
+              "name": "Klinika (Pro)",
+              "price": "150000",
+              "priceCurrency": "UZS",
+              "unitText": "doctor",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "url": "https://shifocrm.uz/#pricing",
+              "description": "Klinika uchun oylik tarif: 150,000 so'm × doktor soni"
+            }
+          ],
           "provider": {
             "@id": "https://shifocrm.uz/#organization"
           },
-          "keywords": "stomatologiya, stomatologiya crm, stomatologiya dasturi, bemorlar bazasi"
+          "keywords": "stomatologiya crm, stomatologik dastur, shifocrm, klinika dasturi, tish xaritasi, bemorlar bazasi"
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://shifocrm.uz/#localbusiness",
+          "name": "ShifoCRM",
+          "image": "https://shifocrm.uz/img/shifocrm_logo.png",
+          "url": "https://shifocrm.uz/",
+          "telephone": "+998940542722",
+          "priceRange": "150000 UZS+",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Toshkent",
+            "addressCountry": "UZ"
+          },
+          "areaServed": "Uzbekistan",
+          "description": "Stomatologiya va tibbiyot klinikalariga mo'ljallangan CRM dasturi va texnik qo'llab-quvvatlash xizmati.",
+          "sameAs": [
+            "https://shifocrm.uz/"
+          ]
         },
         {
           "@type": "WebSite",
           "@id": "https://shifocrm.uz/#website",
           "url": "https://shifocrm.uz/",
           "name": "ShifoCRM",
-          "description": "Stomatologiya klinikasi uchun CRM tizimi",
+          "description": "Stomatologiya va tibbiyot klinikasi uchun CRM dasturi",
           "publisher": {
             "@id": "https://shifocrm.uz/#organization"
           },
           "inLanguage": ["uz", "ru"]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shifocrm.uz/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "O'zbekistonda stomatologiya uchun qaysi CRM dasturi yaxshi?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "ShifoCRM — O'zbekistondagi stomatologiya va tibbiyot klinikalariga moslashtirilgan, tish xaritasi, ombor nazorati va avtomatik SMS xabarnomalar tizimiga ega zamonaviy CRM dasturidir."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "ShifoCRM qanday imkoniyatlarni beradi?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "ShifoCRM quyidagi imkoniyatlarni beradi: bemorlar kartasi, tish xaritasi, ombor va materiallar sarfi nazorati, SMS va Telegram-bot eslatmalari, shifokorlar KPI hisob-kitobi."
+              }
+            }
+          ]
         }
       ]
     }
@@ -85,8 +160,13 @@
 <body class="bg-white text-slate-800">
   <noscript>
     <main>
-      <h1>ShifoCRM — Stomatologiya klinikasi uchun CRM tizimi</h1>
-      <p>Stomatologiya klinikalari uchun bemorlar bazasi, onlayn qabul, avtomatik eslatmalar va moliya tahlili.</p>
+      <h1>Stomatologiya va klinikalar uchun zamonaviy CRM tizimi</h1>
+      <p>ShifoCRM — O'zbekistondagi stomatologiya va klinikalar uchun avtomatlashtirilgan boshqaruv tizimi. Elektron bemor kartasi, tish xaritasi, ombor nazorati va avtomatik SMS eslatmalar.</p>
+      <h2>Tez-tez beriladigan savollar</h2>
+      <h3>O'zbekistonda stomatologiya uchun qaysi CRM dasturi yaxshi?</h3>
+      <p>ShifoCRM — O'zbekistondagi stomatologiya va tibbiyot klinikalariga moslashtirilgan, tish xaritasi, ombor nazorati va avtomatik SMS xabarnomalar tizimiga ega zamonaviy CRM dasturidir.</p>
+      <h3>ShifoCRM qanday imkoniyatlarni beradi?</h3>
+      <p>Bemorlar kartasi, tish xaritasi, ombor va materiallar sarfi nazorati, SMS va Telegram-bot eslatmalari, shifokorlar KPI hisob-kitobi.</p>
       <p>Telefon: +998 94 054 27 22</p>
     </main>
   </noscript>
